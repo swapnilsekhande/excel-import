@@ -51,3 +51,51 @@ func FindEmployeeByID(id uint) (*models.EmployeeDetails, error) {
 
 	return &employee, nil
 }
+
+// below function will updated record in both mysql and redis
+func UpdateEmployee(employee models.EmployeeDetails) error {
+	// Update in MySQL
+	result := database.EmployeeDetails.Save(&employee)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Update in Redis
+	err := CacheEmployee(employee)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// below function will delete record from both mysql and redis
+func DeleteEmployee(id uint) error {
+	// Delete from MySQL
+	result := database.EmployeeDetails.Delete(&models.EmployeeDetails{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Delete from Redis
+	ctx := context.Background()
+	err := database.EmployeeDetailsRedisClient.Del(ctx, getEmployeeCacheKey(id)).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetAllEmployees fetches all employees from MySQL
+func GetAllEmployees() ([]models.EmployeeDetails, error) {
+	var employees []models.EmployeeDetails
+
+	// Query database using GORM
+	result := database.EmployeeDetails.Find(&employees)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return employees, nil
+}
