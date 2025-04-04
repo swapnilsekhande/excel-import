@@ -44,11 +44,11 @@ This project is a simple and efficient backend service written in Go that allows
 
 ### 1. Clone the repository
 
-```bash```
+bash
 
-git clone https://github.com/swapnilsekhande/excel-import.git
-cd excel-import
+```git clone https://github.com/swapnilsekhande/excel-import.git```
+```cd excel-import```
 
-```Update MySQL and Redis configuration inside database/mysql.go and database/redis.go.```
+Update MySQL and Redis configuration inside database/mysql.go and database/redis.go.
 
-go run main.go
+```go run main.go```
