@@ -33,7 +33,6 @@ func UploadXlsxFile(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save employee details" + err.Error()})
 			return
 		}
-		repositories.CacheEmployee(employee)
 		if err != nil {
 			logrus.Error("Error caching employee details:", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to cache employee details"})
@@ -81,7 +80,7 @@ func UpdateEmployee(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Employee updated successfully"})
 }
 
-func GetPaginatedEmployees(c *gin.Context) {
+func GetEmployeesList(c *gin.Context) {
 	// Get query parameters
 	pageStr := c.DefaultQuery("page", "1")
 	limitStr := c.DefaultQuery("limit", "10")
