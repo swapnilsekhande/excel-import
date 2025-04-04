@@ -105,3 +105,12 @@ func GetEmployeesList(c *gin.Context) {
 		"employees": employees,
 	})
 }
+
+func SyncAndClearCacheHandler(c *gin.Context) {
+	err := repositories.SyncAndClearEmployeeCache()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to sync and clear cache", "details": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Cache synced and cleared successfully"})
+}

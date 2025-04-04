@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "4e6498d4-c0ad-4647-a2a3-a5506deb3d5d",
+		"name": "EXCEL IMPORT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22116668"
+	},
+	"item": [
+		{
+			"name": "http://localhost:9000/employee/get/4",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/employee/get/230",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"employee",
+						"get",
+						"230"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/employee/upload",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": [
+								"/home/expandx/Downloads/Sample_Employee_data_xlsx (1).xlsx",
+								"/home/expandx/Desktop/GOLANG/excel-import/Uploads/Sample_Employee_data_xlsx (1).xlsx"
+							]
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:9000/employee/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"employee",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/employee/update",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 230,\n    \"first_name\": \"Swapnil\",\n    \"last_name\": \"Ekhande\",\n    \"company_name\": \"Choice\",\n    \"address\": \"22 Delamore St\",\n    \"city\": \"Hereford\",\n    \"county\": \"Hereford\",\n    \"postal\": \"HR1\",\n    \"phone\": \"01517702273\",\n    \"email\": \"alise.packebush@gmail.com\",\n    \"web\": \"http://www.wncforkliftinc.co.uk\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9000/employee/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"employee",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/employee/list?limit=20&page=2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/employee/list?limit=20&page=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"employee",
+						"list"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:9000/employee/cache/clear",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9000/employee/cache/clear",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"employee",
+						"cache",
+						"clear"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

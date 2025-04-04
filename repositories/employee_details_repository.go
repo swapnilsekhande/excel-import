@@ -108,3 +108,53 @@ func GetAllEmployees(page int, limit int) ([]models.EmployeeDetails, error) {
 
 	return employees, nil
 }
+
+// SyncAndClearEmployeeCache syncs Redis data to MySQL and clears Redis cache
+func SyncAndClearEmployeeCache() error {
+	ctx := context.Background()
+	var cursor uint64
+	var keys []string
+	var err error
+
+	// Scan for all keys matching "employee:*"
+	for {
+		var tempKeys []string
+		tempKeys, cursor, err = database.EmployeeDetailsRedisClient.Scan(ctx, cursor, "employee:*", 100).Result()
+		if err != nil {
+			return fmt.Errorf("error scanning redis keys: %v", err)
+		}
+		keys = append(keys, tempKeys...)
+		if cursor == 0 {
+			break
+		}
+	}
+
+	// Loop through all keys
+	for _, key := range keys {
+		// Get JSON string from Redis
+		data, err := database.EmployeeDetailsRedisClient.Get(ctx, key).Result()
+		if err != nil {
+			fmt.Printf("Failed to get key %s: %v\n", key, err)
+			continue
+		}
+
+		var employee models.EmployeeDetails
+		if err := json.Unmarshal([]byte(data), &employee); err != nil {
+			fmt.Printf("Failed to unmarshal data for key %s: %v\n", key, err)
+			continue
+		}
+
+		// Update MySQL (this also re-caches, which we will delete after)
+		if err := UpdateEmployee(employee); err != nil {
+			fmt.Printf("Failed to update employee %d in DB: %v\n", employee.ID, err)
+			continue
+		}
+
+		// Delete from Redis cache
+		if err := database.EmployeeDetailsRedisClient.Del(ctx, key).Err(); err != nil {
+			fmt.Printf("Failed to delete Redis key %s: %v\n", key, err)
+		}
+	}
+
+	return nil
+}
