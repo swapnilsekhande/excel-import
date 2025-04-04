@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"excel-import/database"
+	"excel-import/models"
 	"excel-import/repositories"
 	"excel-import/services"
 	"net/http"
@@ -60,4 +61,48 @@ func GetEmployee(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, employee)
+}
+
+func UpdateEmployee(c *gin.Context) {
+	var employee models.EmployeeDetails
+
+	// Bind JSON from the request body to the employee struct
+	if err := c.ShouldBindJSON(&employee); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data", "details": err.Error()})
+		return
+	}
+
+	// Call the update function
+	if err := repositories.UpdateEmployee(employee); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update employee", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Employee updated successfully"})
+}
+
+func GetPaginatedEmployees(c *gin.Context) {
+	// Get query parameters
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err1 := strconv.Atoi(pageStr)
+	limit, err2 := strconv.Atoi(limitStr)
+
+	if err1 != nil || err2 != nil || page < 1 || limit < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid pagination parameters"})
+		return
+	}
+
+	employees, err := repositories.GetAllEmployees(page, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch employees", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"page":      page,
+		"limit":     limit,
+		"employees": employees,
+	})
 }

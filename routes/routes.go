@@ -11,6 +11,7 @@ func RenderRoutes(router *gin.Engine) {
 	{
 		routerBooksGroup.POST("/upload", controllers.UploadXlsxFile)
 		routerBooksGroup.GET("/get/:id", controllers.GetEmployee)
+		routerBooksGroup.PUT("/update", controllers.UpdateEmployee)
 	}
 	router.Run(":9000")
 }

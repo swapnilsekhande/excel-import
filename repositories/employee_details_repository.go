@@ -87,12 +87,21 @@ func DeleteEmployee(id uint) error {
 	return nil
 }
 
-// GetAllEmployees fetches all employees from MySQL
-func GetAllEmployees() ([]models.EmployeeDetails, error) {
+// Below Function will get all employees from mysql
+// and return paginated results
+// Pagination is done using limit and offset
+func GetAllEmployees(page int, limit int) ([]models.EmployeeDetails, error) {
 	var employees []models.EmployeeDetails
 
-	// Query database using GORM
-	result := database.EmployeeDetails.Find(&employees)
+	// Calculate offset
+	offset := (page - 1) * limit
+
+	// Query database with limit and offset
+	result := database.EmployeeDetails.
+		Limit(limit).
+		Offset(offset).
+		Find(&employees)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
